@@ -13,11 +13,18 @@ const config: Phaser.Types.Core.GameConfig = {
     height: 768,
     parent: 'game-container',
     backgroundColor: '#87ceeb',
+    pixelArt: true,
+    antialias: false,
+    roundPixels: true,
+    scale: {
+        mode: Phaser.Scale.FIT,
+        autoCenter: Phaser.Scale.CENTER_BOTH
+    },
     physics: {
         default: 'arcade',
         arcade: {
-            gravity: { x: 0, y: 0 }, // Add x component to gravity vector
-            debug: true // Enable physics debug drawing
+            gravity: { x: 0, y: 600 },
+            debug: import.meta.env.DEV 
         }
     },
     scene: [

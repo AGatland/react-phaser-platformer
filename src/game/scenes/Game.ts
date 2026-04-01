@@ -1,68 +1,69 @@
-import { EventBus } from '../EventBus';
 import { Scene } from 'phaser';
 import { Player } from '../entities/Player';
 
-export class Game extends Scene
-{
+export class Game extends Scene {
     private player: Player;
     private platforms: Phaser.Physics.Arcade.StaticGroup;
-    private debugText: Phaser.GameObjects.Text;
 
-    constructor ()
-    {
+    constructor() {
         super('Game');
     }
 
-    create ()
-    {
-        // Set world bounds explicitly
-        this.physics.world.setBounds(0, 0, 2048, 1536); // Double the camera view
+    create() {
+        const width = this.scale.width;
+        const height = this.scale.height;
+        const worldWidth = 3000; // This makes the world much wider than the screen
 
-        // Create platform group
+        // Set World and Camera Bounds
+        this.physics.world.setBounds(0, 0, worldWidth, height);
+        this.cameras.main.setBounds(0, 0, worldWidth, height);
+
+        // Background - We'll tile it across the world width
+        for (let x = 0; x < worldWidth; x += width) {
+            this.add.image(x + width/2, height / 2, 'background').setDisplaySize(width, height);
+        }
+
+        // Platforms
         this.platforms = this.physics.add.staticGroup();
+        const groundY = height * 0.9;
+        
+        // Add a long floor across the entire worldWidth
+        const ground = this.add.rectangle(worldWidth / 2, groundY + 32, worldWidth, 64, 0x000000, 0);
+        this.physics.add.existing(ground, true);
+        this.platforms.add(ground);
 
-        // Create ground platform - using a static body instead of rectangle
-        const ground = this.add.rectangle(512, 700, 800, 32, 0x00ff00);
-        this.platforms.add(ground, true); // true enables static body optimization
+        // Visual grass across the whole world
+        for (let x = 0; x < worldWidth; x += 64) {
+            this.add.image(x, groundY, 'ground').setOrigin(0, 0).setScale(2);
+        }
+
+        // Add some floating platforms to test jumping
+        this.createPlatform(400, groundY - 150);
+        this.createPlatform(700, groundY - 300);
+        this.createPlatform(1000, groundY - 150);
+        this.createPlatform(1300, groundY - 300);
 
         // Create player
-        this.player = new Player(this, 512, 600);
+        this.player = new Player(this, 100, groundY - 100);
 
-        // Set up collisions once
+        // Camera Follow - Using 1, 1 for instant follow to prevent sub-pixel jitter
+        this.cameras.main.startFollow(this.player, true, 1, 1);
+
+        // Collisions
         this.physics.add.collider(this.player, this.platforms);
-
-        // Camera setup with bounds
-        this.cameras.main.setBounds(0, 0, 2048, 1536);
-        this.cameras.main.startFollow(this.player, true, 0.1, 0.1);
-        this.cameras.main.setBackgroundColor(0x87ceeb);
-
-        // Create debug text once
-        this.debugText = this.add.text(16, 16, '', {
-            fontSize: '18px',
-            color: '#000',
-            backgroundColor: '#fff'
-        }).setScrollFactor(0).setDepth(1000);
-
-        EventBus.emit('current-scene-ready', this);
     }
 
-    update() {
-        if (!this.player?.body) return;
-
-        this.player.update();
-
-        // Update debug text only if visible
-        if (this.debugText.visible) {
-            this.debugText.setText(
-                `Position: (${Math.floor(this.player.x)}, ${Math.floor(this.player.y)})\n` +
-                `Velocity: (${Math.floor(this.player.body.velocity.x)}, ${Math.floor(this.player.body.velocity.y)})\n` +
-                `On Ground: ${this.player.body.touching.down}`
-            );
+    private createPlatform(x: number, y: number) {
+        // A simple 3-block wide platform
+        for (let i = 0; i < 3; i++) {
+            const part = this.add.image(x + (i * 64), y, 'ground').setOrigin(0, 0).setScale(2);
+            this.platforms.add(part);
         }
     }
 
-    changeScene ()
-    {
-        this.scene.start('GameOver');
+    update() {
+        if (this.player) {
+            this.player.update();
+        }
     }
 }
