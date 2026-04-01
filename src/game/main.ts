@@ -4,6 +4,7 @@ import { Game as MainGame } from './scenes/Game';
 import { MainMenu } from './scenes/MainMenu';
 import { AUTO, Game } from 'phaser';
 import { Preloader } from './scenes/Preloader';
+import { CONSTANTS } from './Constants';
 
 //  Find out more information about the Game Config at:
 //  https://newdocs.phaser.io/docs/3.70.0/Phaser.Types.Core.GameConfig
@@ -18,28 +19,20 @@ const config: Phaser.Types.Core.GameConfig = {
     roundPixels: true,
     scale: {
         mode: Phaser.Scale.FIT,
-        autoCenter: Phaser.Scale.CENTER_BOTH
+        autoCenter: Phaser.Scale.CENTER_BOTH,
     },
     physics: {
         default: 'arcade',
         arcade: {
-            gravity: { x: 0, y: 600 },
-            debug: import.meta.env.DEV 
-        }
+            gravity: { x: 0, y: CONSTANTS.GRAVITY },
+            debug: import.meta.env.DEV,
+        },
     },
-    scene: [
-        Boot,
-        Preloader,
-        MainMenu,
-        MainGame,
-        GameOver
-    ]
+    scene: [Boot, Preloader, MainMenu, MainGame, GameOver],
 };
 
 const StartGame = (parent: string) => {
-
     return new Game({ ...config, parent });
-
-}
+};
 
 export default StartGame;

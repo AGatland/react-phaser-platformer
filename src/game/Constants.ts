@@ -2,10 +2,10 @@
  * Game constants for easy tuning.
  */
 export const CONSTANTS = {
-    GRAVITY: 600,
+    GRAVITY: 1600,
     PLAYER: {
-        SPEED: 300,
-        JUMP_FORCE: -500,
+        SPEED: 350,
+        JUMP_FORCE: -800,
         SCALE: 4,
     },
     WORLD: {
