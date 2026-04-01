@@ -1,6 +1,6 @@
 import { useLayoutEffect, useRef, useImperativeHandle } from 'react';
 import StartGame from './main';
-import { EventBus } from './EventBus';
+import { EventBus } from '@/game/core/EventBus';
 
 export interface IRefPhaserGame {
     game: Phaser.Game | null;
@@ -17,12 +17,12 @@ export const PhaserGame = ({ currentActiveScene, ref }: IProps) => {
 
     useImperativeHandle(ref, () => ({
         game: game.current,
-        scene: null
+        scene: null,
     }));
 
     useLayoutEffect(() => {
         if (game.current === null) {
-            game.current = StartGame("game-container");
+            game.current = StartGame('game-container');
         }
 
         return () => {
@@ -30,7 +30,7 @@ export const PhaserGame = ({ currentActiveScene, ref }: IProps) => {
                 game.current.destroy(true);
                 game.current = null;
             }
-        }
+        };
     }, []);
 
     useLayoutEffect(() => {
@@ -48,10 +48,8 @@ export const PhaserGame = ({ currentActiveScene, ref }: IProps) => {
 
         return () => {
             EventBus.removeListener('current-scene-ready', handleSceneReady);
-        }
+        };
     }, [currentActiveScene, ref]);
 
-    return (
-        <div id="game-container"></div>
-    );
+    return <div id="game-container"></div>;
 };

@@ -1,6 +1,6 @@
 import { Scene, Input, Physics } from 'phaser';
-import { ASSETS } from '@/game/Assets';
-import { CONSTANTS } from '@/game/Constants';
+import { ASSETS } from '@/game/core/Assets';
+import { CONSTANTS } from '@/game/core/Constants';
 
 export class Player extends Physics.Arcade.Sprite {
     private cursors: Phaser.Types.Input.Keyboard.CursorKeys;
@@ -19,7 +19,7 @@ export class Player extends Physics.Arcade.Sprite {
         scene.add.existing(this);
         scene.physics.add.existing(this);
 
-        this.setScale(CONSTANTS.PLAYER.SCALE);
+        this.setScale(CONSTANTS.PLATFORMER.SCALE);
         this.setCollideWorldBounds(true);
 
         const body = this.body as Phaser.Physics.Arcade.Body;
@@ -45,7 +45,7 @@ export class Player extends Physics.Arcade.Sprite {
     public update(): void {
         if (!this.cursors || !this.body) return;
 
-        const { SPEED, JUMP_FORCE } = CONSTANTS.PLAYER;
+        const { SPEED, JUMP_FORCE } = CONSTANTS.PLATFORMER;
 
         // Kick handling
         if (Input.Keyboard.JustDown(this.spaceKey) && !this.isKicking) {

@@ -1,10 +1,12 @@
 import { Boot } from './scenes/Boot';
 import { GameOver } from './scenes/GameOver';
-import { Game as MainGame } from './scenes/Game';
 import { MainMenu } from './scenes/MainMenu';
 import { AUTO, Game } from 'phaser';
 import { Preloader } from './scenes/Preloader';
-import { CONSTANTS } from './Constants';
+
+// Scenes
+import { HubScene } from './features/hub/HubScene';
+import { PlatformerScene } from './features/platformer/PlatformerScene';
 
 //  Find out more information about the Game Config at:
 //  https://newdocs.phaser.io/docs/3.70.0/Phaser.Types.Core.GameConfig
@@ -24,11 +26,11 @@ const config: Phaser.Types.Core.GameConfig = {
     physics: {
         default: 'arcade',
         arcade: {
-            gravity: { x: 0, y: CONSTANTS.GRAVITY },
+            gravity: { x: 0, y: 0 }, // Global is 0, each scene sets its own
             debug: import.meta.env.DEV,
         },
     },
-    scene: [Boot, Preloader, MainMenu, MainGame, GameOver],
+    scene: [Boot, Preloader, MainMenu, HubScene, PlatformerScene, GameOver],
 };
 
 const StartGame = (parent: string) => {

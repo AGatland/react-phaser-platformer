@@ -1,6 +1,5 @@
 /**
  * Centralized Asset Registry.
- * Avoids magic strings and typos.
  */
 export const ASSETS = {
     IMAGES: {
@@ -10,11 +9,14 @@ export const ASSETS = {
     },
     SPRITES: {
         DINO: 'dino',
+        NINJA: 'ninja',
     },
     ANIMATIONS: {
-        DINO_IDLE: 'idle',
-        DINO_RUN: 'run',
-        DINO_KICK: 'kick',
-        DINO_HURT: 'hurt',
+        DINO_IDLE: 'dino-idle',
+        DINO_RUN: 'dino-run',
+        DINO_KICK: 'dino-kick',
+
+        NINJA_IDLE: 'ninja-idle',
+        NINJA_WALK: 'ninja-walk',
     },
 } as const;

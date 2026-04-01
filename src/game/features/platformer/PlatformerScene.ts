@@ -1,20 +1,23 @@
 import { Scene } from 'phaser';
-import { Player } from '@/game/entities/Player';
-import { ASSETS } from '@/game/Assets';
-import { CONSTANTS } from '@/game/Constants';
+import { Player } from './Player';
+import { ASSETS } from '@/game/core/Assets';
+import { CONSTANTS } from '@/game/core/Constants';
 
-export class Game extends Scene {
+export class PlatformerScene extends Scene {
     private player: Player;
     private platforms: Phaser.Physics.Arcade.StaticGroup;
 
     constructor() {
-        super('Game');
+        super('PlatformerScene');
     }
 
     create() {
         const width = this.scale.width;
         const height = this.scale.height;
         const worldWidth = CONSTANTS.WORLD.WIDTH;
+
+        // Explicitly set gravity for this scene
+        this.physics.world.gravity.y = CONSTANTS.PLATFORMER.GRAVITY;
 
         // Set World and Camera Bounds
         this.physics.world.setBounds(0, 0, worldWidth, height);
@@ -56,6 +59,14 @@ export class Game extends Scene {
 
         this.cameras.main.startFollow(this.player, true, 1, 1);
         this.physics.add.collider(this.player, this.platforms);
+
+        // Escape to Hub
+        this.add
+            .text(16, 16, 'ESC to return to Hub', { fontSize: '18px', color: '#fff' })
+            .setScrollFactor(0);
+        this.input.keyboard?.addKey('ESC').on('down', () => {
+            this.scene.start('HubScene');
+        });
     }
 
     private createPlatform(x: number, y: number) {
