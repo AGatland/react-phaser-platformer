@@ -1,4 +1,5 @@
 import { Scene } from 'phaser';
+import { ASSETS } from '@/game/Assets';
 
 export class Preloader extends Scene {
     constructor() {
@@ -7,11 +8,11 @@ export class Preloader extends Scene {
 
     preload() {
         this.load.setPath('assets');
-        
-        // Essential assets only
-        this.load.image('background', 'bg.png');
-        this.load.image('ground', 'grassblock2.png');
-        this.load.spritesheet('dino', 'dino.png', { frameWidth: 24, frameHeight: 24 });
+
+        // Essential assets using Registry
+        this.load.image(ASSETS.IMAGES.BACKGROUND, 'bg.png');
+        this.load.image(ASSETS.IMAGES.GROUND, 'grassblock2.png');
+        this.load.spritesheet(ASSETS.SPRITES.DINO, 'dino.png', { frameWidth: 24, frameHeight: 24 });
 
         // Simple text indicator
         this.add.text(512, 384, 'Loading...', { fontSize: '32px', color: '#fff' }).setOrigin(0.5);
@@ -19,24 +20,24 @@ export class Preloader extends Scene {
 
     create() {
         this.anims.create({
-            key: 'idle',
-            frames: this.anims.generateFrameNumbers('dino', { start: 0, end: 3 }),
+            key: ASSETS.ANIMATIONS.DINO_IDLE,
+            frames: this.anims.generateFrameNumbers(ASSETS.SPRITES.DINO, { start: 0, end: 3 }),
             frameRate: 10,
-            repeat: -1
+            repeat: -1,
         });
 
         this.anims.create({
-            key: 'run',
-            frames: this.anims.generateFrameNumbers('dino', { start: 4, end: 10 }),
+            key: ASSETS.ANIMATIONS.DINO_RUN,
+            frames: this.anims.generateFrameNumbers(ASSETS.SPRITES.DINO, { start: 4, end: 10 }),
             frameRate: 12,
-            repeat: -1
+            repeat: -1,
         });
 
         this.anims.create({
-            key: 'kick',
-            frames: this.anims.generateFrameNumbers('dino', { start: 11, end: 13 }),
+            key: ASSETS.ANIMATIONS.DINO_KICK,
+            frames: this.anims.generateFrameNumbers(ASSETS.SPRITES.DINO, { start: 11, end: 13 }),
             frameRate: 10,
-            repeat: 0
+            repeat: 0,
         });
 
         this.scene.start('Game');

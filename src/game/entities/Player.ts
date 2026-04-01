@@ -1,7 +1,9 @@
-import { Scene, Input, Types, Physics } from 'phaser';
+import { Scene, Input, Physics } from 'phaser';
+import { ASSETS } from '@/game/Assets';
+import { CONSTANTS } from '@/game/Constants';
 
 export class Player extends Physics.Arcade.Sprite {
-    private cursors: Types.Input.Keyboard.CursorKeys;
+    private cursors: Phaser.Types.Input.Keyboard.CursorKeys;
     private wasd: {
         W: Input.Keyboard.Key;
         A: Input.Keyboard.Key;
@@ -12,25 +14,30 @@ export class Player extends Physics.Arcade.Sprite {
     private isKicking: boolean = false;
 
     constructor(scene: Scene, x: number, y: number) {
-        super(scene, x, y, 'dino');
-        
+        super(scene, x, y, ASSETS.SPRITES.DINO);
+
         scene.add.existing(this);
         scene.physics.add.existing(this);
 
-        this.setScale(4); // Even bigger dino!
+        this.setScale(CONSTANTS.PLAYER.SCALE);
         this.setCollideWorldBounds(true);
-        
+
         const body = this.body as Phaser.Physics.Arcade.Body;
         body.setSize(16, 16).setOffset(4, 4);
 
         if (scene.input.keyboard) {
             this.cursors = scene.input.keyboard.createCursorKeys();
-            this.wasd = scene.input.keyboard.addKeys('W,A,S,D') as any;
+            this.wasd = scene.input.keyboard.addKeys('W,A,S,D') as {
+                W: Input.Keyboard.Key;
+                A: Input.Keyboard.Key;
+                S: Input.Keyboard.Key;
+                D: Input.Keyboard.Key;
+            };
             this.spaceKey = scene.input.keyboard.addKey(Input.Keyboard.KeyCodes.SPACE);
         }
 
         // Listen for kick animation completion
-        this.on('animationcomplete-kick', () => {
+        this.on(`animationcomplete-${ASSETS.ANIMATIONS.DINO_KICK}`, () => {
             this.isKicking = false;
         });
     }
@@ -38,16 +45,14 @@ export class Player extends Physics.Arcade.Sprite {
     public update(): void {
         if (!this.cursors || !this.body) return;
 
-        const velocity = 300;
-        const jumpForce = -500;
+        const { SPEED, JUMP_FORCE } = CONSTANTS.PLAYER;
 
-        // Kick handling (takes priority over other animations)
+        // Kick handling
         if (Input.Keyboard.JustDown(this.spaceKey) && !this.isKicking) {
             this.isKicking = true;
-            this.play('kick');
+            this.play(ASSETS.ANIMATIONS.DINO_KICK);
         }
 
-        // If kicking, we don't allow movement or other animations
         if (this.isKicking) {
             this.setVelocityX(0);
             return;
@@ -59,27 +64,25 @@ export class Player extends Physics.Arcade.Sprite {
         const moveUp = this.cursors.up.isDown || this.wasd.W.isDown;
 
         if (moveLeft) {
-            this.setVelocityX(-velocity);
+            this.setVelocityX(-SPEED);
             this.setFlipX(true);
-            if (this.body.blocked.down) this.play('run', true);
+            if (this.body.blocked.down) this.play(ASSETS.ANIMATIONS.DINO_RUN, true);
         } else if (moveRight) {
-            this.setVelocityX(velocity);
+            this.setVelocityX(SPEED);
             this.setFlipX(false);
-            if (this.body.blocked.down) this.play('run', true);
+            if (this.body.blocked.down) this.play(ASSETS.ANIMATIONS.DINO_RUN, true);
         } else {
             this.setVelocityX(0);
-            if (this.body.blocked.down) this.play('idle', true);
+            if (this.body.blocked.down) this.play(ASSETS.ANIMATIONS.DINO_IDLE, true);
         }
 
-        // Jump
         if (moveUp && this.body.blocked.down) {
-            this.setVelocityY(jumpForce);
+            this.setVelocityY(JUMP_FORCE);
         }
 
-        // Air frame
         if (!this.body.blocked.down) {
             this.stop();
-            this.setFrame(12); // The jump frame
+            this.setFrame(12);
         }
     }
 }
