@@ -17,7 +17,7 @@ export class MainMenu extends Scene {
         this.logo = this.add.sprite(512, 300, 'dino').setScale(8).play('idle');
 
         this.title = this.add
-            .text(512, 460, 'Dino CV Game', {
+            .text(512, 460, 'Arcade', {
                 fontFamily: 'Arial Black',
                 fontSize: 64,
                 color: '#ffffff',
