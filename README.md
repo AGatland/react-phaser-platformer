@@ -1,10 +1,39 @@
-# 🕹️ Phaser Arcade Hub (v2.0)
+# 🕹️ Phaser Arcade Hub
 
-A multi-game arcade experience where you can explore various game modes from a central hub!
+A multi-game arcade experience built with **React 19** and **Phaser 3.90**. Explore various game modes from a central top-down hub!
 
-## 🏰 The Hub
+## 🏰 The Hub (Top-Down Mode)
 The central meeting point where you can navigate between different arcade games.
 - **Navigation:** Walk into designated zones to launch different game experiences.
+- **Perspective:** Top-down movement and interaction.
+
+---
+
+## 🥷 NINJA NITRO (In Progress - Top-Down Combat)
+A high-octane survival arcade game featuring fast-paced ninja combat.
+
+### 🕹️ Core Mechanics
+1. **Karate Chop (Primary Action - Left Mouse Button)**
+   - Aim with your mouse to send a powerful chop-wave through the air.
+   - Deals damage to all enemies in its path.
+2. **Dodge Roll (Secondary Action - Spacebar)**
+   - Perform a high-speed roll in your current movement direction.
+   - Primarily used for evasion and repositioning.
+3. **The Mutation System (Planned)**
+   - Every wave survived will grant a "Mutation" choice to enhance your abilities.
+   - *Planned Upgrades:*
+     - **Piercing Chop:** Chop-waves pierce through more enemies.
+     - **Impact Roll:** The Dodge Roll now deals damage and knockback to enemies you pass through.
+     - **Nitro Trail:** Leave a damaging trail behind while rolling.
+
+---
+
+## 🦖 Dino Dash (Temp Platform Game)
+A classic side-scrolling platformer currently in place as a temporary game mode.
+- **Controls:** Standard platformer movement (Jump, Run, Kick).
+- **Future Plans:** This will be expanded or replaced with more polished platformer experiences in future updates.
+
+---
 
 ## 🛠️ Technical Architecture
 - **Engine:** Phaser 3.90 (Arcade Physics)
@@ -14,36 +43,9 @@ The central meeting point where you can navigate between different arcade games.
 
 ## 📂 Project Structure
 - `@/game/features/hub`: The top-down arcade lobby.
+- `@/game/features/ninja-nitro`: The top-down combat game.
 - `@/game/features/platformer`: The current platformer implementation.
 - `@/game/entities`: Physics-based actors (Player, Enemies).
 - `@/game/scenes`: Game worlds and loading logic.
 - `@/game/Constants.ts`: Central tuning for physics and balance.
 - `@/game/Assets.ts`: Typed registry for all images and animations.
-
----
-
-# Games
-
----
-
-## 🦖 Dino Combo-Kicker (In Progress - Top-Down)
-*Note: Originally described as a platformer, this game is now being developed as a high-octane top-down survival arcade.*
-
-Survive waves of increasingly chaotic prehistoric (and possibly futuristic) enemies in a scrolling arena. The goal is simple: **Stay Alive, Build Combos, and Mutate.**
-
-### 🕹️ Core Mechanics
-1. **The Kick (Primary Action - Spacebar)**
-   - The most powerful tool in your kit. Kicking an enemy sends them flying as a physics projectile.
-   - **Combos:** If a kicked enemy hits another enemy, they both explode, creating a chain reaction. The more enemies in the chain, the higher the score multiplier.
-2. **Seed-Gun (Secondary Action - Mouse Aim & Click)**
-   - Aim 360° with your mouse to fire rapid "Fire-Seeds."
-   - Used for picking off enemies or "nudging" them into better positions for a massive kick.
-3. **The Mutation System (Replayability)**
-   - Every wave survived grants a "Mutation" choice (pick 1 of 3).
-   - *Examples:*
-     - **Bouncy Kicks:** Kicked enemies bounce off walls instead of exploding on impact.
-     - **Piercing Seeds:** Seeds pierce through the first enemy they hit.
-
----
-
-## 🏃 Platform game (in-progress)

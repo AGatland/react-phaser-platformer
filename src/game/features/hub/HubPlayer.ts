@@ -14,6 +14,8 @@ export class HubPlayer extends Physics.Arcade.Sprite {
         D: Input.Keyboard.Key;
     };
 
+    private lastDirection: 'UP' | 'DOWN' | 'LEFT' | 'RIGHT' = 'DOWN';
+
     constructor(scene: Scene, x: number, y: number) {
         super(scene, x, y, ASSETS.SPRITES.NINJA);
 
@@ -36,8 +38,8 @@ export class HubPlayer extends Physics.Arcade.Sprite {
             };
         }
 
-        // Start with down animation
-        this.play('ninja-down');
+        // Start with down idle animation
+        this.play(ASSETS.ANIMATIONS.NINJA_IDLE_DOWN);
     }
 
     public update(): void {
@@ -50,31 +52,48 @@ export class HubPlayer extends Physics.Arcade.Sprite {
         // X Movement
         if (this.cursors.left.isDown || this.wasd.A.isDown) {
             velocityX = -SPEED;
+            this.lastDirection = 'LEFT';
         } else if (this.cursors.right.isDown || this.wasd.D.isDown) {
             velocityX = SPEED;
+            this.lastDirection = 'RIGHT';
         }
 
         // Y Movement
         if (this.cursors.up.isDown || this.wasd.W.isDown) {
             velocityY = -SPEED;
+            this.lastDirection = 'UP';
         } else if (this.cursors.down.isDown || this.wasd.S.isDown) {
             velocityY = SPEED;
+            this.lastDirection = 'DOWN';
         }
 
         this.setVelocity(velocityX, velocityY);
 
         // Animation logic based on direction
         if (velocityX < 0) {
-            this.play('ninja-left', true);
+            this.play(ASSETS.ANIMATIONS.NINJA_WALK_LEFT, true);
         } else if (velocityX > 0) {
-            this.play('ninja-right', true);
+            this.play(ASSETS.ANIMATIONS.NINJA_WALK_RIGHT, true);
         } else if (velocityY < 0) {
-            this.play('ninja-up', true);
+            this.play(ASSETS.ANIMATIONS.NINJA_WALK_UP, true);
         } else if (velocityY > 0) {
-            this.play('ninja-down', true);
+            this.play(ASSETS.ANIMATIONS.NINJA_WALK_DOWN, true);
         } else {
-            // Stop animation on the current frame when idle
-            this.stop();
+            // Play idle animation based on last direction
+            switch (this.lastDirection) {
+                case 'UP':
+                    this.play(ASSETS.ANIMATIONS.NINJA_IDLE_UP, true);
+                    break;
+                case 'DOWN':
+                    this.play(ASSETS.ANIMATIONS.NINJA_IDLE_DOWN, true);
+                    break;
+                case 'LEFT':
+                    this.play(ASSETS.ANIMATIONS.NINJA_IDLE_LEFT, true);
+                    break;
+                case 'RIGHT':
+                    this.play(ASSETS.ANIMATIONS.NINJA_IDLE_RIGHT, true);
+                    break;
+            }
         }
 
         // Normalize diagonal speed

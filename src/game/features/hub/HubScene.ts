@@ -45,12 +45,23 @@ export class HubScene extends Scene {
             .setOrigin(0.5);
         this.physics.add.existing(platformerZone, true);
 
+        // Ninja Nitro Zone
+        const nitroZone = this.add.rectangle(width * 0.8, height / 2, 200, 200, 0xff0000, 0.3);
+        this.add
+            .text(width * 0.8, height / 2 - 120, 'NINJA NITRO', { fontSize: '24px', color: '#fff' })
+            .setOrigin(0.5);
+        this.physics.add.existing(nitroZone, true);
+
         // Create player
         this.player = new HubPlayer(this, width / 2, height / 2);
 
         // Detection
         this.physics.add.overlap(this.player, platformerZone, () => {
             this.scene.start('PlatformerScene');
+        });
+
+        this.physics.add.overlap(this.player, nitroZone, () => {
+            this.scene.start('NinjaNitroScene');
         });
 
         EventBus.emit('current-scene-ready', this);

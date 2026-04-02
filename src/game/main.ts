@@ -7,6 +7,7 @@ import { Preloader } from './scenes/Preloader';
 // Scenes
 import { HubScene } from './features/hub/HubScene';
 import { PlatformerScene } from './features/platformer/PlatformerScene';
+import { NinjaNitroScene } from './features/ninja-nitro/NinjaNitroScene';
 
 //  Find out more information about the Game Config at:
 //  https://newdocs.phaser.io/docs/3.70.0/Phaser.Types.Core.GameConfig
@@ -30,7 +31,7 @@ const config: Phaser.Types.Core.GameConfig = {
             debug: import.meta.env.DEV,
         },
     },
-    scene: [Boot, Preloader, MainMenu, HubScene, PlatformerScene, GameOver],
+    scene: [Boot, Preloader, MainMenu, HubScene, PlatformerScene, NinjaNitroScene, GameOver],
 };
 
 const StartGame = (parent: string) => {
