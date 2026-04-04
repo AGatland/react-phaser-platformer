@@ -10,6 +10,7 @@ export const ASSETS = {
     SPRITES: {
         DINO: 'dino',
         NINJA: 'ninja',
+        MUTATION_ICONS: 'icons',
     },
     ANIMATIONS: {
         DINO_IDLE: 'dino-idle',

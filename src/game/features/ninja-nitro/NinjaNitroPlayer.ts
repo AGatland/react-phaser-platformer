@@ -1,7 +1,10 @@
+import { INinjaNitroScene } from './NinjaNitroScene';
 import { Scene, Input, Physics } from 'phaser';
 import { ASSETS } from '@/game/core/Assets';
 import { CONSTANTS } from '@/game/core/Constants';
 import { ChopWave } from './ChopWave';
+import { useGameStore } from '@/game/core/store';
+import { Enemy } from './Enemy';
 
 /**
  * The ninja player in Ninja Nitro.
@@ -22,6 +25,7 @@ export class NinjaNitroPlayer extends Physics.Arcade.Sprite {
     private rollSpeedMultiplier: number = 2.5;
 
     private spaceKey: Input.Keyboard.Key;
+    private isInvulnerable: boolean = false;
 
     constructor(scene: Scene, x: number, y: number) {
         super(scene, x, y, ASSETS.SPRITES.NINJA);
@@ -57,6 +61,32 @@ export class NinjaNitroPlayer extends Physics.Arcade.Sprite {
         this.play(ASSETS.ANIMATIONS.NINJA_IDLE_DOWN);
     }
 
+    public takeDamage(amount: number): void {
+        if (this.isInvulnerable || this.isRolling) return;
+
+        useGameStore.getState().takeDamage(amount);
+
+        // Visual Feedback
+        this.setTint(0xff0000);
+        this.isInvulnerable = true;
+
+        this.scene.time.delayedCall(500, () => {
+            this.clearTint();
+            this.isInvulnerable = false;
+        });
+
+        // Check if dead
+        if (useGameStore.getState().health <= 0) {
+            this.die();
+        }
+    }
+
+    private die(): void {
+        // Simple death for now - restart scene
+        this.scene.scene.restart();
+        useGameStore.getState().resetGame();
+    }
+
     private performChop(pointer: Input.Pointer): void {
         if (this.isAttacking || this.isRolling) return;
 
@@ -87,8 +117,18 @@ export class NinjaNitroPlayer extends Physics.Arcade.Sprite {
 
         this.play(animKey);
 
-        // Spawn Chop Wave
-        new ChopWave(this.scene, this.x, this.y, deg);
+        // Spawn Chop Wave and add to physics group BEFORE setting velocity
+        const wave = new ChopWave(this.scene, this.x, this.y, deg);
+        const scene = this.scene as INinjaNitroScene;
+        if (scene.chopWaves) {
+            scene.chopWaves.add(wave);
+
+            // Set velocity after adding to group to ensure body is initialized
+            const speed = 400;
+            const vx = Math.cos(Phaser.Math.DegToRad(deg)) * speed;
+            const vy = Math.sin(Phaser.Math.DegToRad(deg)) * speed;
+            (wave.body as Physics.Arcade.Body).setVelocity(vx, vy);
+        }
 
         this.once('animationcomplete', () => {
             this.isAttacking = false;
@@ -157,6 +197,19 @@ export class NinjaNitroPlayer extends Physics.Arcade.Sprite {
 
         if (velocityX !== 0 || velocityY !== 0) {
             this.body.velocity.normalize().scale(currentSpeed);
+        }
+
+        // Impact Roll Logic
+        const levels = useGameStore.getState().mutations;
+        const impactLevel = levels[2] || 0; // ID 2 = Impact Roll
+        if (this.isRolling && impactLevel > 0) {
+            const scene = this.scene as INinjaNitroScene;
+            if (scene.enemies) {
+                this.scene.physics.overlap(this, scene.enemies, (_, e) => {
+                    const damage = impactLevel * 20;
+                    (e as Enemy).takeDamage(damage);
+                });
+            }
         }
 
         // Animation logic
